@@ -30,10 +30,10 @@ The board will be installed
   - Go TOOLS > Board > STM32F1 Boards > Oribokit 1.1 Ars Electronica 2020 Edition
 
 6. Get the starter code for your board at:
-
 https://github.com/oribotic/oribokit
+You can either download the code or copy and paste the code into a new arduino sketch.
 
-7. check the instructions in the comments about how to enable the bootloader to allow the board to be flashed.
+7. Read and follow the instructions at the top of the starter code about how to enable the bootloader to allow the board to be flashed, by default the upload method, under Tools > upload method, should be "STM32duino bootloader", that is correct!
 
 8. Verify the code. Go SKETCH > VERIFY (or press the tick in the top left of the arduino window)
 
