@@ -2,7 +2,8 @@
 Firmware for the oribokit
 
 
-# instructions for arduino
+# instructions for Arduino IDE
+Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board.
 
 1. download Arduino IDE from https://www.arduino.cc/en/Main/Software
 
