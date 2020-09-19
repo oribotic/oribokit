@@ -1,8 +1,11 @@
 # oribokit
-Firmware for the oribokit
+Firmware for the oribokit - robotic origami kit
+available at https://oribokit.com or https://matthewgardiner.com/oribokit
+
+We currently only support Arduino IDE for programming oribokit. Arduino is great!
 
 # instructions for Arduino IDE
-Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board.
+Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get the additional board definitions installed on your system.
 
 1. download Arduino IDE from https://www.arduino.cc/en/Main/Software
 
@@ -21,14 +24,20 @@ The board will be installed
 5. Select the correct board version in Tools
 
 - If you have version 1.0 
-  - Go TOOLS > Board > Oribokit 1.0 Collectors Edition
+  - Go TOOLS > Board > STM32F1 Boards > Oribokit 1.0 Collectors Edition
   
 - If you have version 1.1
-  - Go TOOLS > Board > Oribokit 1.1 Ars Electronica 2020 Edition
+  - Go TOOLS > Board > STM32F1 Boards > Oribokit 1.1 Ars Electronica 2020 Edition
 
 6. Get the starter code for your board at:
 
 https://github.com/oribotic/oribokit
+
+7. check the instructions in the comments about how to enable the bootloader to allow the board to be flashed.
+
+8. Verify the code. Go SKETCH > VERIFY (or press the tick in the top left of the arduino window)
+
+9. Upload the code (with the board connected by USB, in bootloader mode) Go SKETCH > UPLOAD (or press the arrow in the top left of the arduino window)
 
 
 ## notes and dependencies
