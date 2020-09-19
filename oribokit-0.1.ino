@@ -1,15 +1,26 @@
 /*
  * ORIBOKIT - //oribokit.com
  * robotic origami starter kit
- * "firmware" for oribokit board 1 nb
+ * "firmware" for oribokit board 1.0
  * 3 blossom kit
  * 1 LDR
- * Synchonised movement
- * Connect to USB port, with 
+ * Synchonised servo movements (servo 1 moves fastest, then servo 2, then servo 3 moves slowest)
+ * 
+ * ********* TO PROGRAM **********
+ * Connect to USB port, with jumper removed (see the bottom of the board. 
+ * There's black jumper -- it connects two pins -- on B4 and G (PINS 7 & 8 counting from the USB connector)
+ * REMOVE IT
+ * Press the Reset button, the LED will keep flashing
+ * This is known as the maple (after maple labs) bootloader mode
+ * If this LED is not flashing when Arduino gets to the programming point, it will give a DFU Error
+ * Just press RESET and try again if that happens
+ * NOTE: Go to Preferences > Settings 
+ * and check the two boxes next to "Show Vebose Output during" compiliation and upload
+ * ********* TO RUN **************
+ * Replace the jumper on pins on B4 and G (PINS 7 & 8 counting from the USB connector)
+ * Press RESET, the LED will flash a few times fast, and then switch off. 
+ * LED will turn on when you press LO or HI
  */
-
-// TODO
-// @EEPROM use for max and min LDR values
 
 #include <Servo.h>
 #include <EEPROM.h>
@@ -25,7 +36,7 @@ int servoPin2 = PA9;                                       // PWM pin connected 
 int servoPin3 = PA10;                                      // PWM pin connected to servo 3
 int servoPosition = 90;                                    // variable to store the servo position
 // servo                                                   
-int minAngle = 100;                                        // minimum angle for the servo 
+int minAngle = 60;                                        // minimum angle for the servo 
 int maxAngle = 180;                                        // maximum angle for the servo
 uint16 minLight = 2000;                                    // minimum value for the LDR (this is the LO value)
 uint16 maxLight = 6000;                                    // maximum angle for the LDR (this is the HI value)
@@ -82,19 +93,31 @@ void setup() {
   EEPROM.PageSize  = 0x400;
 }
 
-// -------------------------------------------------------------------------
-// LOOP FUNCTION
-// this function repeat forever, as fast as the processor can go!
-// 1. read the sensor and average out the readings
-//    averaging smooths out spikes in the readings
-//    making the servo movement less jittery
-//    try changing the number of readings
-// 2. allow for button presses
-//    pressing the min or max button allows setting of the
-//    state that determines the LO or HI position of the servo
-//    at that light level
-// 3. position the servos
-// --------------------------------------------------------------------------
+/*
+ * -------------------------------------------------------------------------
+ * LOOP FUNCTION
+ * this function repeat forever, as fast as the processor can go!
+ * 1. read the sensor and average out the readings
+ *    averaging smooths out spikes in the readings
+ *    making the servo movement less jittery
+ *    try changing the number of readings
+ * 2. allow for button presses
+ *    pressing the min or max button allows setting of the
+ *    state that determines the LO or HI position of the servo
+ *    at that light level
+ * 3. position the servos
+ * --------------------------------------------------------------------------
+ *
+ * 
+ *  -------------------------------------------------------------------------
+ *  CONFIG FUNCTIONS
+ *  saveconfig - write the values to eeprom for min and max light
+ *  readconfig - read the values from eeprom for min and max light
+ *  writeValue - function to do the writing to eeprom
+ *  readValue  - funcion that does to the job of reading from eeprom
+ * --------------------------------------------------------------------------
+ */
+
 
 void saveConfig () {
   writeValue (0x10, minLight);
@@ -180,9 +203,9 @@ void loop() {
   }
   average3 = total3 / numReadings3;                       // calculate the average. Average = sum/number
   
-	// --------------------------
-	// 2. allow for button presses
-	// max (HI) button
+  // -------------------------- 
+  // 2. allow for button presses
+  // max (HI) button
   // --------------------------
   maxPushed = digitalRead(maxButtonPin);                  // read if button is pressed
   if (maxPushed) {                                        // set maximum LDR value
@@ -218,10 +241,10 @@ void loop() {
   }
   
   // --------------------------
-	// 3. position the servos
+  // 3. position the servos
   // position the servo based on the current LDR average reading
-	// mapped between the min and max LDR settings
-	// mapped to the min and max angle settings
+  // mapped between the min and max LDR settings
+  // mapped to the min and max angle settings
   // --------------------------
   servoPosition = map(average1, minLight, maxLight, minAngle, maxAngle);
   servoPosition = constrain(servoPosition, minAngle, maxAngle);
