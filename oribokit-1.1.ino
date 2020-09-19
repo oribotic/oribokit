@@ -1,11 +1,24 @@
 /*
  * ORIBOKIT - //oribokit.com
  * robotic origami starter kit
- * "firmware" for oribokit board 1 nb
+ * "firmware" for oribokit board 1.1
  * 3 blossom kit
  * 1 LDR
- * Synchonised movement
- * Connect to USB port, with 
+ * Synchonised servo movements (servo 1 moves fastest, then servo 2, then servo 3 moves slowest)
+ * 
+ * ********* TO PROGRAM **********
+ * Connect to USB port, with jumper removed (see the bottom of the board. 
+ * There's black jumper (it connects two pins) on G and BT1) REMOVE IT
+ * Press the Reset button, the LED will keep flashing
+ * This is known as the maple (after maple labs) bootloader mode
+ * If this LED is not flashing when Arduino gets to the programming point, it will give a DFU Error
+ * Just press RESET and try again if that happens
+ * NOTE: Go to Preferences > Settings 
+ * and check the two boxes next to "Show Vebose Output during" compiliation and upload
+ * ********* TO RUN **************
+ * Replace the jumper on pins G AND BT1 (last two pins on the header before the LDR)
+ * Press RESET, the LED will flash a few times fast, and then switch off. 
+ * LED will turn on when you press LO or HI
  */
 
 // TODO
@@ -24,11 +37,13 @@ int servoPin1 = PA10;                                      // PWM pin connected 
 int servoPin2 = PA9;                                       // PWM pin connected to servo 2
 int servoPin3 = PA8;                                       // PWM pin connected to servo 3
 int servoPosition = 90;                                    // variable to store the servo position
+
 // servo                                                   
 int minAngle = 100;                                        // minimum angle for the servo 
 int maxAngle = 180;                                        // maximum angle for the servo
 uint16 minLight = 2000;                                    // minimum value for the LDR (this is the LO value)
 uint16 maxLight = 6000;                                    // maximum angle for the LDR (this is the HI value)
+
 // BUTTONS                                                 
 int minButtonPin    = PB11;                                // button pin to set the minimum LDR value
 int maxButtonPin    = PB10;                                // button pin to set the maximum LDR value
@@ -36,23 +51,27 @@ int maxPushed       = 0;                                   // variable to store 
 int minPushed       = 0;                                   // variable to store the state of the min button
 bool saveConfigFlag = 0;                                   // boolean (true/false) to check if we need to save
 bool readConfigFlag = 1;                                   // boolean (true/false) to check if we need to save
+
 // SENSOR                           
 int LDRPin = PA5;                                          // the pin connected to the Light Dependent Resistor
-// smoothing 1
+
+// SMOOTHING FOR SERVO 1
 int readIndex1    = 0;                                     // the index of the current reading
-const int numReadings1  = 10;                               // the number of readings to average over
+const int numReadings1  = 10;                              // the number of readings to average over, more = slower
 int readings1[numReadings1];                               // an array to store up to {numReadings} readings
 int total1       = 0;                                      // the running sum total
 int average1     = 0;                                      // the average
-// smoothing 2
+
+// SMOOTHING FOR SERVO 2
 int readIndex2    = 0;                                     // the index of the current reading
-const int numReadings2  = 20;                              // the number of readings to average over
+const int numReadings2  = 20;                              // the number of readings to average over, more = slower
 int readings2[numReadings2];                               // an array to store up to {numReadings} readings
 int total2       = 0;                                      // the running sum total
 int average2     = 0;                                      // the average
-// smoothing 3
+
+// SMOOTHING FOR SERVO 3
 int readIndex3    = 0;                                     // the index of the current reading
-const int numReadings3  = 40;                              // the number of readings to average over
+const int numReadings3  = 40;                              // the number of readings to average over, more = slower
 int readings3[numReadings3];                               // an array to store up to {numReadings} readings
 int total3       = 0;                                      // the running sum total
 int average3     = 0;                                      // the average
@@ -82,19 +101,15 @@ void setup() {
   EEPROM.PageSize  = 0x400;
 }
 
-// -------------------------------------------------------------------------
-// LOOP FUNCTION
-// this function repeat forever, as fast as the processor can go!
-// 1. read the sensor and average out the readings
-//    averaging smooths out spikes in the readings
-//    making the servo movement less jittery
-//    try changing the number of readings
-// 2. allow for button presses
-//    pressing the min or max button allows setting of the
-//    state that determines the LO or HI position of the servo
-//    at that light level
-// 3. position the servos
+/* 
+ *  -------------------------------------------------------------------------
+ *  CONFIG FUNCTIONS
+ *  saveconfig - write the values to eeprom for min and max light
+ *  readconfig - read the values from eeprom for min and max light
+ *  writeValue - function to do the writing to eeprom
+ *  readValue  - funcion that does to the job of reading from eeprom
 // --------------------------------------------------------------------------
+*/
 
 void saveConfig () {
   writeValue (0x10, minLight);
@@ -140,6 +155,21 @@ uint16 readValue (uint16 addr) {
   }
   return data;
 }
+
+
+// -------------------------------------------------------------------------
+// LOOP FUNCTION
+// this function repeat forever, as fast as the processor can go!
+// 1. read the sensor and average out the readings
+//    averaging smooths out spikes in the readings
+//    making the servo movement less jittery
+//    try changing the number of readings
+// 2. allow for button presses
+//    pressing the min or max button allows setting of the
+//    state that determines the LO or HI position of the servo
+//    at that light level
+// 3. position the servos
+// --------------------------------------------------------------------------
 
 
 void loop() {
@@ -244,7 +274,9 @@ void loop() {
     Serial.print("\t");  
     Serial.println(average3); 
   }
-  
+
+  // changing the delay changes how many miliseconds pass between each loop
+  // 1000 is one second, to make your oribokit response slow, set this high
   delay(30);
 
 }
