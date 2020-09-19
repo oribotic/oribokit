@@ -24,10 +24,10 @@ The board will be installed
 5. Select the correct board version in Tools
 
 - If you have version 1.0 
-  - Go TOOLS > Board > STM32F1 Boards > Oribokit 1.0 Collectors Edition
+  - Go TOOLS > Board > ORIBOKIT Boards > Oribokit 1.0 Collectors Edition
   
 - If you have version 1.1
-  - Go TOOLS > Board > STM32F1 Boards > Oribokit 1.1 Ars Electronica 2020 Edition
+  - Go TOOLS > Board > ORIBOKIT Boards > Oribokit 1.1 Ars Electronica 2020 Edition
 
 6. Get the starter code for your board at:
 https://github.com/oribotic/oribokit
