@@ -39,6 +39,10 @@ You can either download the code or copy and paste the code into a new arduino s
 
 9. Upload the code (with the board connected by USB, in bootloader mode) Go SKETCH > UPLOAD (or press the arrow in the top left of the arduino window)
 
+# BOARDS INFORMATION
+
+Current versions are in https://github.com/oribotic/oribokit/tree/master/boards
+[https://github.com/oribotic/oribokit/blob/master/boards/oribokit-boards.pdf](PDF containing Board information)
 
 ## notes and dependencies
 
