@@ -42,7 +42,9 @@ You can either download the code or copy and paste the code into a new arduino s
 # BOARDS INFORMATION
 
 Current versions are in https://github.com/oribotic/oribokit/tree/master/boards
-[https://github.com/oribotic/oribokit/blob/master/boards/oribokit-boards.pdf](PDF containing Board information)
+[PDF containing Board information](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-boards.pdf)
+![Oribokit™ Version 1.0 Collectors Edition](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.0.png "Oribokit™ Version 1.0 Collectors Edition")
+![Oribokit™ Version 1.1 Ars Electronica Edition](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.1.png "Oribokit™ Version 1.1 Ars Electronica Edition")
 
 ## notes and dependencies
 
