@@ -2,12 +2,19 @@
 Firmware for the oribokit - robotic origami kit
 available at https://oribokit.com or https://matthewgardiner.com/oribokit
 
-We currently only support Arduino IDE for programming oribokit. Arduino is great!
+We currently only support Arduino IDE for programming oribokit. Arduino is so 90's it's like the Nirvana of microcontrolling!
 
 # SETUP INSTRUCTIONS for Arduino IDE
-The following works perfectly on MacOS, there's some extra steps for Windows that I'm still working out.
-
 Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get the oribokit board definitions installed on your system.
+
+## macos 
+The below instructions works perfectly on MacOS. 
+
+## windows
+If you are using windows you need to follow the instructions here: https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/Maple-drivers using the windows drivers downloadable here: https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/master/drivers/win
+
+## linux
+I've not yet investigated how to use the STMduino bootloader under Linux yet, please get in touch if you need this support and we can find a solution together.
 
 1. download Arduino IDE from https://www.arduino.cc/en/Main/Software
 
