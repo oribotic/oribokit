@@ -5,6 +5,8 @@ available at https://oribokit.com or https://matthewgardiner.com/oribokit
 We currently only support Arduino IDE for programming oribokit. Arduino is great!
 
 # SETUP INSTRUCTIONS for Arduino IDE
+The following works perfectly on MacOS, there's some extra steps for Windows that I'm still working out.
+
 Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get the oribokit board definitions installed on your system.
 
 1. download Arduino IDE from https://www.arduino.cc/en/Main/Software
