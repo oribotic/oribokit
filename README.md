@@ -2,7 +2,7 @@
 Firmware for the oribokit - robotic origami kit
 available at https://oribokit.com or https://matthewgardiner.com/oribokit
 
-We currently only support Arduino IDE for programming oribokit. Arduino is so 90's it's like the Nirvana of microcontrolling!
+We currently only support Arduino IDE for programming oribokit. Arduino is so 2000's it's like the Nirvana of microcontrolling!
 
 # SETUP INSTRUCTIONS for Arduino IDE
 Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get the oribokit board definitions installed on your system.
