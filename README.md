@@ -8,7 +8,16 @@ We currently only support Arduino IDE for programming oribokit. Arduino is so 20
 Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get the oribokit board definitions installed on your system.
 
 ### macos 
-The instructions below work perfectly on MacOS, as no additional drivers are required.
+The instructions below work perfectly on MacOS, as (generally) no additional drivers are required. 
+If you are having upload problems, enable verbose debugging in the Arduino preferences.
+
+You may need to install libusb if you get this error:
+
+_dyld: Library not loaded: /opt/local/lib/libusb-1.0.0.dylib_
+
+A fix is to use brew to install the library using this command in the terminal. If you don’t have brew, you can install it from https://brew.sh/
+
+> brew install libusb
 
 ### windows
 If you are using windows you need to follow the instructions here: https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/Maple-drivers using the windows drivers downloadable here: https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/master/drivers/win
