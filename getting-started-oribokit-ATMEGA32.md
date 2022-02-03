@@ -43,58 +43,68 @@ https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 **EXP 1**
 *2.54mm 6 pin header*
 ```
-TX.........TX Serial
-RX.........RX Serial
-5V.........5V
-G..........Ground
-SDA........I2C Serial Data
-SCL........I2C Serial Clock
+LABEL      FUNCTION             PIN
+--------------------------------------
+TX         TX Serial            Pin 1
+RX         RX Serial            Pin 0
+5V         5V
+G          Ground
+SDA        I2C Serial Data      Pin 2
+SCL        I2C Serial Clock     Pin 3
 ```
 
 **EXP 2** 
 *2.54mm 6 pin header*
 ```
+LABEL      FUNCTION             PIN
+--------------------------------------
 INT        Interrupt
-A5         Analog Pin 5
-A4         Analog Pin 4
-A3         Analog Pin 3
-A2         Analog Pin 2
-A1         Analog Pin 1		
+A5         10 Bit Analog        Pin 5
+A4         10 Bit Analog        Pin 4
+A3         10 Bit Analog        Pin 3
+A2         10 Bit Analog        Pin 2
+A1         10 Bit Analog        Pin 1		
 ```
 
 **RGB [1 - 3]** 
 *2.54mm 3 pin header*
 ```
+LABEL      FUNCTION             PIN
+--------------------------------------
 GND        Ground  
 5V         5V DIGITAL
 DATA       RGB1, RGB2, RGB3
-RGB1       PWM PB6    Pin 10
-RGB2       PWM PC6    Pin 5
-RGB3       PWM PC7    Pin 13
-```
+RGB1       PWM PB6              Pin 10
+RGB2       PWM PC6              Pin 5
+RGB3       PWM PC7              Pin 13
+```                             
 
-**SERVO [1 - 3]**
-*2.54mm 3 pin header*
+**SERVO [1 - 3]**               
+*2.54mm 3 pin header*           
 ```
-GND        Ground  
-5V         5V DIGITAL
-RGB1       PWM PB5    Pin 9
-RGB2       PWM PD7    Pin 6
-RGB3       PWM PD6    Pin 12
-```
+LABEL      FUNCTION             PIN
+--------------------------------------
+GND        Ground               
+5V         5V DIGITAL           
+SERVO1     PWM PB5              Pin 9
+SERVO2     PWM PD7              Pin 6
+SERVO3     PWM PD6              Pin 12
+```                             
 
-**FPC [1 - 3]**
-*0.5mm Flat Flex Cable*
+**FPC [1 - 3]**                 
+*0.5mm Flat Flex Cable*         
 
 ```
-GND        Ground  
-5V         5V DIGITAL
-RGB OUT    Not connected
-RGB I      RGB1 RGB2 RGB3
-A4         Analog Pin 4
-A3         Analog Pin 3
-A2         Analog Pin 2
-A1         Analog Pin 1
+LABEL      FUNCTION             PIN
+--------------------------------------
+GND        Ground               
+5V         5V DIGITAL           
+RGB OUT    Not connected        
+RGB IN     RGB1 RGB2 RGB3       
+A4         10 Bit Analog        Pin 4
+A3         10 Bit Analog        Pin 3
+A2         10 Bit Analog        Pin 2
+A1         10 Bit Analog        Pin 1
 ```
 
 # Board information
