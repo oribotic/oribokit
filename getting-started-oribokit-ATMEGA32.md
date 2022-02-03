@@ -1,5 +1,13 @@
 # ORIBOKIT 1.3 - 1.6 (ATMEGA32u4)
 
+
+**Contents** 
+
+1. [programming instructions](#programming-instructions)
+2. [system information](#additional-system-information)
+3. [pinouts](#pinouts)
+4. [board information](#board-information)
+
 ## SETUP INSTRUCTIONS for Arduino IDE
 
 Arduino IDE is software that works on MacOS, Windows and Linux that lets you write, compile and upload new programs to a microcontroller such as the one built into your oribokit controller board. Follow these steps to get started with writing your own code for oribokit.
@@ -8,7 +16,7 @@ Get the starter code suitable for your board at:
 https://github.com/oribotic/oribokit
 You can either download the code or copy and paste the code into a new arduino sketch.
    
-## TO PROGRAM
+## Programming Instructions
 
 1. Download and run the latest Arduino IDE https://arduino.cc
 2. Connect USB-C cable to oribokit and your computer USB port (automatically install or manually install drivers on windows https://www.arduino.cc/en/Guide/DriverInstallation)
@@ -38,7 +46,7 @@ If you are using windows you need to follow the instructions here:
 https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 
 
-# Pin information
+# Pinouts
 
 **EXP 1**
 *2.54mm 6 pin header*
