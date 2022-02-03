@@ -64,9 +64,9 @@ Current versions are in https://github.com/oribotic/oribokit/tree/master/boards
 [PDF containing Board information](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-boards-1.0-1.6.pdf)
 ![Oribokit™ Version 1.0 Collectors Edition](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.0@2x.png "Oribokit™ Version 1.0 Collectors Edition")
 ![Oribokit™ Version 1.1 Ars Electronica Edition](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.1@2x.png "Oribokit™ Version 1.1 Ars Electronica Edition")
-![Oribokit™ Version 1.4 RGB Flower](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.4@3x.jpg "Oribokit™ Version 1.4 RGB Flower")
-![Oribokit™ Version 1.5 RGB Flower II](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.5@3x.jpg "Oribokit™ Version 1.5 RGB Flower II")
-![Oribokit™ Version 1.6 Flat Flex](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.6@3x.jpg "Oribokit™ Version 1.6 Flat Flex")
+![Oribokit™ Version 1.4 RGB Flower](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.4@2x.jpg "Oribokit™ Version 1.4 RGB Flower")
+![Oribokit™ Version 1.5 RGB Flower II](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.5@2x.jpg "Oribokit™ Version 1.5 RGB Flower II")
+![Oribokit™ Version 1.6 Flat Flex](https://github.com/oribotic/oribokit/blob/master/boards/oribokit-board-1.6@2x.jpg "Oribokit™ Version 1.6 Flat Flex")
 
 ## notes and dependencies
 
