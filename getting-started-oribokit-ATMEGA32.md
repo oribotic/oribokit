@@ -117,7 +117,7 @@ LABEL      FUNCTION             PIN
 --------------------------------------
 GND        Ground               
 5V         5V DIGITAL           
-RGB OUT    Not connected        
+RGB OUT    Not connected (can be connected to another RGB input as a daisy chain)      
 RGB IN     RGB1 RGB2 RGB3       
 A4         Analog PF1           A4
 A3         Analog PF4           A3
