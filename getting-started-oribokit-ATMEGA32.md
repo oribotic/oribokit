@@ -45,67 +45,72 @@ A fix is to use brew to install the library using this command in the terminal. 
 If you are using windows you need to follow the instructions here: 
 https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 
-
 # Pinouts
 
+**LDR**
+```
+LABEL      FUNCTION             ARDUINO
+--------------------------------------
+LDR        Analog PF7           A0
+```
 **EXP 1**
 
 *2.54mm 6 pin header*
 ```
-LABEL      FUNCTION             PIN
+LABEL      FUNCTION             ARDUINO
 --------------------------------------
-TX         TX Serial            Pin 1
-RX         RX Serial            Pin 0
+TX         TX Serial            1
+RX         RX Serial            0
 5V         5V
 G          Ground
-SDA        I2C Serial Data      Pin 2
-SCL        I2C Serial Clock     Pin 3
+SDA        I2C Serial Data      2
+SCL        I2C Serial Clock     3
 ```
 
 **EXP 2**
 
 *2.54mm 6 pin header*
 ```
-LABEL      FUNCTION             PIN
+LABEL      FUNCTION             ARDUINO
 --------------------------------------
-INT        Interrupt
-A5         10 Bit Analog        Pin 5
-A4         10 Bit Analog        Pin 4
-A3         10 Bit Analog        Pin 3
-A2         10 Bit Analog        Pin 2
-A1         10 Bit Analog        Pin 1		
+INT        Interrupt            7
+A5         Analog PF0           A5
+A4         Analog PF1           A4
+A3         Analog PF4           A3
+A2         Analog PF5           A2
+A1         Analog PF6           A1		
 ```
 
 **RGB [1 - 3]**
 
-*2.54mm 3 pin header*
+*3 x 2.54mm 3 pin headers*
 ```
-LABEL      FUNCTION             PIN
+LABEL      FUNCTION             ARDUINO
 --------------------------------------
 GND        Ground  
 5V         5V DIGITAL
 DATA       RGB1, RGB2, RGB3
-RGB1       PWM PB6              Pin 10
-RGB2       PWM PC6              Pin 5
-RGB3       PWM PC7              Pin 13
+RGB1       Digital PWM PB6      10
+RGB2       Digital PWM PC6      5
+RGB3       Digital PWM PC7      13
 ```                             
 
 **SERVO [1 - 3]**
 
-*2.54mm 3 pin header*           
+*3 x 2.54mm 3 pin headers*           
 ```
-LABEL      FUNCTION             PIN
+LABEL      FUNCTION             ARDUINO
 --------------------------------------
 GND        Ground               
 5V         5V DIGITAL           
-SERVO1     PWM PB5              Pin 9
-SERVO2     PWM PD7              Pin 6
-SERVO3     PWM PD6              Pin 12
+SERVO1     Digital PWM PB5      9
+SERVO2     Digital PWM PD7      6
+SERVO3     Digital PWM PD6      2
 ```                             
 
 **FPC [1 - 3]**
 
-*0.5mm Flat Flex Cable*         
+*3 x 0.5mm Flat Flex Cable connectors*
 
 ```
 LABEL      FUNCTION             PIN
@@ -114,10 +119,10 @@ GND        Ground
 5V         5V DIGITAL           
 RGB OUT    Not connected        
 RGB IN     RGB1 RGB2 RGB3       
-A4         10 Bit Analog        Pin 4
-A3         10 Bit Analog        Pin 3
-A2         10 Bit Analog        Pin 2
-A1         10 Bit Analog        Pin 1
+A4         Analog PF1           A4
+A3         Analog PF4           A3
+A2         Analog PF5           A2
+A1         Analog PF6           A1
 ```
 
 # Board information
