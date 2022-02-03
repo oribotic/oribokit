@@ -1,4 +1,4 @@
-# ORIBOKIT™
+# ORIBOKIT®
 Firmware for the oribokit - robotic origami kit
 available at https://oribokit.com or https://matthewgardiner.com/oribokit
 
