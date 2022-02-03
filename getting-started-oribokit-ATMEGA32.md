@@ -27,7 +27,7 @@ You can either download the code or copy and paste the code into a new arduino s
 
 For additional help on getting started, including installation of USB drivers, see https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 
-## Additional system related information
+## Additional system information
 
 ### macos 
 The instructions above work perfectly on MacOS, as (generally) no additional drivers are required. 
