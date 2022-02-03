@@ -6,8 +6,9 @@ We currently only support Arduino IDE for programming oribokit. Arduino is so 20
 
 # SETUP FOR ARDUINO
 
-For Oribokit 1.0 and 1.1 see https://github.com/oribotic/oribokit/tree/master/STM32_oribokit_arduino
-For Oribokit 1.3 to 1.6 see https://github.com/oribotic/oribokit/tree/master/AVR_oribokit_arduino
+For Oribokit 1.0 and 1.1 see https://github.com/oribotic/oribokit/tree/master/getting-started-oribokit-STM32.md
+
+For Oribokit 1.3 to 1.6 see https://github.com/oribotic/oribokit/tree/master/getting-started-oribokit-ATMEGA32.md
 
 # BOARDS INFORMATION
 
