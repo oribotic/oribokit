@@ -49,6 +49,7 @@ https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 # Pinouts
 
 **EXP 1**
+
 *2.54mm 6 pin header*
 ```
 LABEL      FUNCTION             PIN
@@ -61,7 +62,8 @@ SDA        I2C Serial Data      Pin 2
 SCL        I2C Serial Clock     Pin 3
 ```
 
-**EXP 2** 
+**EXP 2**
+
 *2.54mm 6 pin header*
 ```
 LABEL      FUNCTION             PIN
@@ -74,7 +76,8 @@ A2         10 Bit Analog        Pin 2
 A1         10 Bit Analog        Pin 1		
 ```
 
-**RGB [1 - 3]** 
+**RGB [1 - 3]**
+
 *2.54mm 3 pin header*
 ```
 LABEL      FUNCTION             PIN
@@ -87,7 +90,8 @@ RGB2       PWM PC6              Pin 5
 RGB3       PWM PC7              Pin 13
 ```                             
 
-**SERVO [1 - 3]**               
+**SERVO [1 - 3]**
+
 *2.54mm 3 pin header*           
 ```
 LABEL      FUNCTION             PIN
@@ -99,7 +103,8 @@ SERVO2     PWM PD7              Pin 6
 SERVO3     PWM PD6              Pin 12
 ```                             
 
-**FPC [1 - 3]**                 
+**FPC [1 - 3]**
+
 *0.5mm Flat Flex Cable*         
 
 ```
