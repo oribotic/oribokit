@@ -1,7 +1,7 @@
 // ORIBOKIT DIGITAL WRITE TEST
 
 // LED
-int LEDPin          = 17;                // PB0 info LED pin
+int LEDPin          = 17;                // PB0 is the RX LED, normally used to flash on and off during data transfer
 
 // state variable
 bool state = false;                      // a boolean can only be true or false
