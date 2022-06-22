@@ -6,7 +6,7 @@
    https://matthewgardiner.net      https://matthewgardiner.com
    
    Default Firmware for oribokit boards versions 1.4 - 1.6
-   
+    
    FEATURES
    ATMEGA32u4 http://www.atmel.com/Images/Atmel-7766-8-bit-AVR-ATmega16U4-32U4_Datasheet.pdf
    Bootloader: Arduino Micro https://www.arduino.cc/en/pmwiki.php?n=Main/arduinoBoardMicro
@@ -57,7 +57,7 @@
    Compiled with 2.0.1
 */
 
-#define ORIBOKIT_VERSION "1.5.1 simple"
+#define ORIBOKIT_VERSION "1.6 singleton"
 
 // 
 
@@ -79,16 +79,19 @@ int servoPin3      = 12;                                  // PWM PD6 D12 pin con
 int servoPosition1 = 90;                                  // variable to store the servo 1 position
 int servoPosition2 = 90;                                  // variable to store the servo 2 position
 int servoPosition3 = 90;                                  // variable to store the servo 3 position
+int last_servoPosition1 = 90;                             // variable to store the servo 1 position
+int last_servoPosition2 = 90;                             // variable to store the servo 2 position
+int last_servoPosition3 = 90;                             // variable to store the servo 3 position
 
 // servo
-int minAngle1 = 100;                                      // minimum angle for servo1
+int minAngle1 = 90;                                       // minimum angle for servo1
 int maxAngle1 = 180;                                      // maximum angle for servo1
-int minAngle2 = 100;                                      // minimum angle for servo2
-int maxAngle2 = 200;                                      // maximum angle for servo2
-int minAngle3 = 60;                                       // minimum angle for servo3
+int minAngle2 = 90;                                       // minimum angle for servo2
+int maxAngle2 = 180;                                      // maximum angle for servo2
+int minAngle3 = 90;                                       // minimum angle for servo3
 int maxAngle3 = 180;                                      // maximum angle for servo3
-int minLight = 500;                                       // minimum value for the LDR (this is the LO value)
-int maxLight = 900;                                       // maximum angle for the LDR (this is the HI value)
+int minLight  = 500;                                      // minimum value for the LDR (this is the LO value)
+int maxLight  = 900;                                      // maximum angle for the LDR (this is the HI value)
 
 // BUTTONS
 int minButtonPin    = 4;                                  // PD4 button pin to set the minimum LDR value
@@ -102,17 +105,19 @@ bool readConfigFlag = 1;                                  // boolean (true/false
 #define LED_PIN_1   10                                    // PWM PB6 D10 pin connected to LED data 1
 #define LED_PIN_2   5                                     // PWM PC6 D5  pin connected to LED data 2
 #define LED_PIN_3   13                                    // PWM PC7 D13 pin connected to LED data 3
-#define NUM_LEDS    2                                     // LEDs connected to each pin
-#define BRIGHTNESS  200                                   // Brightness used in HSV colours, static
+#define NUM_LEDS_1  3                                     // LEDs connected to each pin
+#define NUM_LEDS_2  3                                     // LEDs connected to each pin
+#define NUM_LEDS_3  3                                     // LEDs connected to each pin
+#define BRIGHTNESS  150                                   // Brightness used in HSV colours, static
 #define SATURATION  200                                   // Saturation used in HSV colours, static
 #define LED_TYPE    WS2812                                // chip type of LED
 #define COLOR_ORDER GRB                                   // colour order of LEDs
 #define HUE_HI      180                                   // in HSV space the highest hue value mapped to average sensor value
 #define HUE_LO      0                                     // in HSV space the lowest hue value mapped to average sensor value
 int hue             = 0;                                  // Hue value used in HSV colours, variable
-CRGB leds_1[NUM_LEDS];                                    // CRGB object 1
-CRGB leds_2[NUM_LEDS];                                    // CRGB object 2
-CRGB leds_3[NUM_LEDS];                                    // CRGB object 3
+CRGB leds_1[NUM_LEDS_1];                                  // CRGB object 1
+CRGB leds_2[NUM_LEDS_2];                                  // CRGB object 2
+CRGB leds_3[NUM_LEDS_2];                                  // CRGB object 3
 
 // SENSOR
 int LDRPin = A0;                                          // PF7 pin connected to the Light Dependent Resistor
@@ -171,9 +176,9 @@ void setup() {
   pinMode(minButtonPin, INPUT);                           // MAX Push button as input
   pinMode(maxButtonPin, INPUT);                           // MAX Push button as input
   // set up the LED objects
-  FastLED.addLeds<LED_TYPE, LED_PIN_1, COLOR_ORDER>(leds_1, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.addLeds<LED_TYPE, LED_PIN_2, COLOR_ORDER>(leds_2, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.addLeds<LED_TYPE, LED_PIN_3, COLOR_ORDER>(leds_3, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, LED_PIN_1, COLOR_ORDER>(leds_1, NUM_LEDS_1).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, LED_PIN_2, COLOR_ORDER>(leds_2, NUM_LEDS_2).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, LED_PIN_3, COLOR_ORDER>(leds_3, NUM_LEDS_3).setCorrection( TypicalLEDStrip );
 }
 
 /*
@@ -247,7 +252,7 @@ void loop() {
     readConfig();
   }
 
-  // 1. read get average sensor values average sensor values && process animation value
+  // 1. read get average sensor values average sensor values & process animation value
   readSensors();
 
   // 2. always poll LDR low change
@@ -394,18 +399,29 @@ void updateLEDs (int value1, int value2, int value3)
   // 1
   hue = map(value1, minLight, maxLight, HUE_LO, HUE_HI);
   hue = constrain(hue, HUE_LO, HUE_HI);
-  leds_1[0] = CHSV(hue, SATURATION, BRIGHTNESS);
-  leds_1[1] = CHSV(hue, SATURATION, BRIGHTNESS);
+  int i;
+  for (i=0; i<NUM_LEDS_1; i++)
+  {
+    leds_1[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_1[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
+  
   // 2
   hue = map(value2, minLight, maxLight, HUE_LO, HUE_HI);
   hue = constrain(hue, HUE_LO, HUE_HI);
-  leds_2[0] = CHSV(hue, SATURATION, BRIGHTNESS);
-  leds_2[1] = CHSV(hue, SATURATION, BRIGHTNESS);
+  for (i=0; i<NUM_LEDS_2; i++)
+  {
+    leds_2[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_2[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
   // 3
   hue = map(value3, minLight, maxLight, HUE_LO, HUE_HI);
   hue = constrain(hue, HUE_LO, HUE_HI);
-  leds_3[0] = CHSV(hue, SATURATION, BRIGHTNESS);
-  leds_3[1] = CHSV(hue, SATURATION, BRIGHTNESS);
+  for (i=0; i<NUM_LEDS_3; i++)
+  {
+    leds_3[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_3[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
   FastLED.show();
 
 }
@@ -421,15 +437,38 @@ void updateServos(int value1, int value2, int value3)
 
   servoPosition1 = map(value1, minLight, maxLight, minAngle1, maxAngle1);
   servoPosition1 = constrain(servoPosition1, minAngle1, maxAngle1);
-  servo1.write(servoPosition1);
+  if (servoPosition1 != last_servoPosition1)
+  {
+    servo1.attach(servoPin1);                               // attach the servo class instance to servoPin 1
+    servo1.write(servoPosition1);
+  } else {
+    servo1.detach();
+  }
+  
 
   servoPosition2 = map(value2, minLight, maxLight, minAngle2, maxAngle2);
   servoPosition2 = constrain(servoPosition2, minAngle2, maxAngle2);
-  servo2.write(servoPosition2);
+  if (servoPosition2 != last_servoPosition2)
+  {
+    servo2.attach(servoPin2);                               // attach the servo class instance to servoPin 2
+    servo2.write(servoPosition2);
+  } else {
+    servo2.detach();
+  }
 
   servoPosition3 = map(value3, minLight, maxLight, minAngle3, maxAngle3);
   servoPosition3 = constrain(servoPosition3, minAngle3, maxAngle3);
-  servo3.write(servoPosition3);
+  if (servoPosition3 != last_servoPosition3)
+  {
+    servo3.attach(servoPin3);                               // attach the servo class instance to servoPin 3
+    servo3.write(servoPosition3);
+  } else {
+    servo3.detach();
+  }
+
+  last_servoPosition1 = servoPosition1;
+  last_servoPosition2 = servoPosition2;
+  last_servoPosition3 = servoPosition1;
 }
 
 void printDebug ()
