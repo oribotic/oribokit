@@ -1,3 +1,10 @@
+// Library Required
+// Author: Daniel Garcia
+// https://github.com/FastLED/FastLED
+// Originally compiled with Version 3.4.0, also works with 3.5.0
+// To install GO Tools > Manage Libraries 
+// Search for FastLED and install!
+
 #include "FastLED.h"
 
 // LED VARIABLES 
