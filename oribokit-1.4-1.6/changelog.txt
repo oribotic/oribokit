@@ -1,0 +1,27 @@
+CHANGELOG
+
+added OSC library
+- oribokit.osc.h 
+- oribokit.osc.cpp
+
+TODO
+
+create struct for handling servos
+
+struct oribokitServo
+{
+  Servo *servo;
+  uint8_t pin;
+  uint8_t position;
+  uint8_t last;
+  uint8_t max;
+  uint8_t min;
+  int average;
+  int animation;
+};
+
+struct servos oribokitServo[3] = {
+  {.servo = &servo1, .pin = 9, .position =90, .last = 90, .max = 180, .min = 90, .average = 0, .animation = 0 },
+  {.servo = &servo2, .pin = 6, .position =90, .last = 90, .max = 180, .min = 90, .average = 0, .animation = 0 },
+  {.servo = &servo3, .pin = 12, .position =90, .last = 90, .max = 180, .min = 90, .average = 0, .animation = 0 },
+};

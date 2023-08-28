@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:micro",
-    "sketch": "oribokit-1.4-1.6/oribokit-1.4-1.6.ino",
+    "sketch": "oribokit-1.4-1.6.ino",
     "programmer": "avrisp",
     "port": "/dev/tty.usbmodem2101"
 }
