@@ -3,11 +3,11 @@
 
 **Contents** 
 
-1. [programming instructions](#programming-instructions)
+1. [Programming instructions](#programming-instructions)
 2. [Dependencies](#dependencies)
-3. [system information](#additional-system-information)
-4. [pinouts](#pinouts)
-5. [board information](#board-information)
+3. [System information](#additional-system-information)
+4. [Pinouts](#pinouts)
+5. [Board information](#board-information)
 
 ## SETUP INSTRUCTIONS for Arduino IDE
 
