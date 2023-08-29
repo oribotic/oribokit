@@ -5,8 +5,9 @@
 
 1. [programming instructions](#programming-instructions)
 2. [system information](#additional-system-information)
-3. [pinouts](#pinouts)
-4. [board information](#board-information)
+3. [Dependencies](#dependencies)
+4. [pinouts](#pinouts)
+5. [board information](#board-information)
 
 ## SETUP INSTRUCTIONS for Arduino IDE
 
@@ -26,6 +27,30 @@ You can either download the code or copy and paste the code into a new arduino s
 6. If the RESET LED flashes during programming, press RESET button (near USB connector)
 
 For additional help on getting started, including installation of USB drivers, see https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
+
+## Dependencies
+
+**all available via Toos > Manage Libraries - search for the library name**
+
+OSC message
+Author: Adrian Freed
+https://github.com/CNMAT/OSC
+Compiled with Version 1.3.5
+
+FastLED
+Author: Daniel Garcia
+https://github.com/FastLED/FastLED 
+Compiled with Version 3.4.0
+
+STATISTIC
+Author: Rob Tillaart
+https://github.com/RobTillaart/Statistic
+Compiled with Version 0.4.3
+       
+MOVING AVERAGE LIBRARY
+Author: Alexandre Hiroyuki Yamauchi
+https://github.com/AlexandreHiroyuki/MovingAverage_ArduinoLibrary
+Compiled with 2.0.1
 
 ## Additional system information
 
