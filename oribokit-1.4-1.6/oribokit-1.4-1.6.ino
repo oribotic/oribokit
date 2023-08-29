@@ -105,6 +105,18 @@ uint8_t maxAngle3 = 180;                                  // maximum angle for s
 int minLight  = 500;                                      // minimum value for the LDR (this is the LO value)
 int maxLight  = 900;                                      // maximum value for the LDR (this is the HI value)
 
+// eeprom address settings
+
+#define EEPROM_MINLIGHT 0
+#define EEPROM_MAXLIGHT 5
+#define EEPROM_MIN1 10
+#define EEPROM_MIN2 15
+#define EEPROM_MIN3 20
+#define EEPROM_MAX1 25
+#define EEPROM_MAX2 30
+#define EEPROM_MAX3 35
+#define EEPROM_LOOP 40
+
 // BUTTONS
 uint8_t minButtonPin    = 4;                              // PD4 button pin to set the minimum LDR value
 uint8_t maxButtonPin    = 8;                              // PB4 button pin to set the maximum LDR value
@@ -157,14 +169,14 @@ int animation_max           = 0;                          // acceleration toward
 // PERIODIC RANDOM MOVEMENT
 Statistic LDR;                                            // LDR is the statistical object for the LDR sensor
 #define LDR_STD_DEV_LIMIT 2                               // Standard Deviation limit low change of LDR
-const int loopDelay     = 50;                             // delay for every loop
+int loopDelay           = 200;                            // delay for doing servo and sensor loop actions
 double counterA         = 0;                              // counter for first timing loop
 double counterB         = 0;                              // counter for second timing loop
 int limitA              = 5000 / loopDelay;               // limit for the first timing loop
 int limitB              = random(1, 10);                  // limit for the second timing loop
 boolean LDR_low_change  = 0;                              // LDR low change variable
 int timer_state         = 0;
-
+int loopTimer           = 0;
 
 // 0 = no messages
 // 1 = data messages
@@ -212,21 +224,47 @@ void setup() {
 */
 
 void saveConfig () {
-  writeIntEEPROM(0, minLight);
-  writeIntEEPROM(10, maxLight);
+  writeIntEEPROM(EEPROM_MINLIGHT, minLight);
+  writeIntEEPROM(EEPROM_MAXLIGHT, maxLight);
+  writeIntEEPROM(EEPROM_MIN1, minAngle1);
+  writeIntEEPROM(EEPROM_MIN2, minAngle2);
+  writeIntEEPROM(EEPROM_MIN3, minAngle3);
+  writeIntEEPROM(EEPROM_MAX1, maxAngle1);
+  writeIntEEPROM(EEPROM_MAX2, maxAngle2);
+  writeIntEEPROM(EEPROM_MAX3, maxAngle3);
+  writeIntEEPROM(EEPROM_LOOP, loopDelay);
 }
 
 void readConfig() {
-  minLight = readIntEEPROM(0);
-  maxLight = readIntEEPROM(10);
+  minLight  = readIntEEPROM(EEPROM_MINLIGHT);
+  maxLight  = readIntEEPROM(EEPROM_MAXLIGHT);
+  minAngle1 = (uint8_t)readIntEEPROM(EEPROM_MIN1);
+  minAngle2 = (uint8_t)readIntEEPROM(EEPROM_MIN2);
+  minAngle3 = (uint8_t)readIntEEPROM(EEPROM_MIN3);
+  maxAngle1 = (uint8_t)readIntEEPROM(EEPROM_MAX1);
+  maxAngle2 = (uint8_t)readIntEEPROM(EEPROM_MAX2);
+  maxAngle3 = (uint8_t)readIntEEPROM(EEPROM_MAX3);
+  loopDelay  = readIntEEPROM(EEPROM_LOOP);
   animation_min = minLight;
   animation_max = maxLight;
   if (DEBUG > 0)
   {
-    Serial.print(" minLight");
+    Serial.print(" minLight ");
     Serial.print(minLight);
-    Serial.print(" maxLight");
+    Serial.print(" maxLight ");
     Serial.println(maxLight);
+    Serial.print(" minAngle1 ");
+    Serial.print(minAngle1);
+    Serial.print(" minAngle2 ");
+    Serial.println(minAngle2);
+    Serial.print(" minAngle3 ");
+    Serial.print(minAngle3);
+    Serial.print(" maxAngle1 ");
+    Serial.println(maxAngle1);
+    Serial.print(" maxAngle2 ");
+    Serial.println(maxAngle2);
+    Serial.print(" maxAngle3 ");
+    Serial.println(maxAngle3);
   }
   
   readConfigFlag = 0;
@@ -299,13 +337,19 @@ int checkTimers(int state) {
       // reset the counters and set a random number for the next cycle length
       limitB = random(1, 10);
       counterB = 0;
-      randomSeed(limitB);
+      randomSeed(LDRreading);
       animation_min = minLight + random(0, maxLight-minLight);
-      randomSeed(limitA);
+      randomSeed(LDRreading);
       animation_max = maxLight - random(0, maxLight-minLight);
       LDR.clear();
+      #if OSC
+        updateTimersOSC();
+      #endif
     }
   }
+  #if OSC
+    updateCountersOSC();
+  #endif
   return state;
 }
 
@@ -598,19 +642,25 @@ void loop() {
       rxOSC();
   #endif
 
-  switch (mode)
+  loopTimer ++;
+  if (loopTimer > loopDelay)
   {
-    case MODE_ORIBOKIT:
-      mode_oribokit ();
-      break;
-    case MODE_USER_CONTROL:
-      mode_user_control();
-      break;
+    loopTimer = 0;
+    switch (mode)
+    {
+      case MODE_ORIBOKIT:
+        mode_oribokit ();
+        break;
+      case MODE_USER_CONTROL:
+        mode_user_control();
+        break;
+    }
   }
+  
 
   printDebug();
   // LOOP DELAY
   // changing the delay changes how many miliseconds pass between each loop
   // 1000 is one second, to make your oribokit response slow, set this to a high number
-  delay(loopDelay);
+  //delay(loopDelay);
 }

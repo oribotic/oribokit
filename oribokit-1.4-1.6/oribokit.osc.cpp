@@ -27,15 +27,38 @@ void updateOSC()
   // report ldr readings
 
   sendOSC("/ldr", LDRreading);
-  sendOSC("/servo", 1, servoPosition1);
-  sendOSC("/servo", 2, servoPosition2);
-  sendOSC("/servo", 3, servoPosition3);
+  //if (servoPosition1 != last_servoPosition1)
+  sendOSC("/servo/pos", 1, servoPosition1);
+  //if (servoPosition2 != last_servoPosition2)
+  sendOSC("/servo/pos", 2, servoPosition2);
+  //if (servoPosition3 != last_servoPosition3)
+  sendOSC("/servo/pos", 3, servoPosition3);
   
+  sendOSC("/servo/min", 1, minAngle1);
+  sendOSC("/servo/min", 2, minAngle2);
+  sendOSC("/servo/min", 3, minAngle3);
+
+  sendOSC("/servo/max", 1, maxAngle1);
+  sendOSC("/servo/max", 2, maxAngle2);
+  sendOSC("/servo/max", 3, maxAngle3);
+
   sendOSC("/average", 1, average1);
   sendOSC("/average", 2, average2);
   sendOSC("/average", 3, average3);
-
 } 
+
+void updateTimersOSC()
+{
+  sendOSC("/timers/A", limitA);
+  sendOSC("/timers/B", limitB);
+}
+
+void updateCountersOSC()
+{
+  sendOSC("/counters/A", counterA);
+  sendOSC("/counters/B", counterB);
+}
+
 
 // variant two (NEW) for sending instruments messages 
 void sendOSC(char oscAddress[20], uint8_t arg1=3333, uint16_t arg2=3333)
@@ -73,6 +96,7 @@ void setLDRHigh (OSCMessage &msg)
       return;
     }
     maxLight = val;
+    //writeIntEEPROM(EEPROM_MAXLIGHT, val);
     sendOSC("/ack/ldr/hi", val);
   }
 }
@@ -102,12 +126,15 @@ void setServoAngleMax (OSCMessage &msg)
     {
       case 1:
         maxAngle1 = value;
+        writeIntEEPROM(EEPROM_MAX1, value);
         break;
       case 2:
         maxAngle2 = value;
+        writeIntEEPROM(EEPROM_MAX2, value);
         break;
       case 3:
         maxAngle3 = value;
+        writeIntEEPROM(EEPROM_MAX3, value);
         break;
     }
     sendOSC("/ack/servo/max", servo, value);
@@ -125,6 +152,17 @@ void setMode (OSCMessage &msg)
   }
 } 
 
+void setLoopDelay (OSCMessage &msg)
+{
+  if (isNumber(msg, 0))
+  {
+    uint8_t val = getNumber(msg, 0);
+    loopDelay = val;
+    writeIntEEPROM(40, loopDelay);
+    sendOSC("/ack/loopdelay", val);
+  }
+} 
+
 void setServoAngleMin (OSCMessage &msg)
 {
   if (isNumber(msg, 0))
@@ -135,12 +173,15 @@ void setServoAngleMin (OSCMessage &msg)
     {
       case 1:
         minAngle1 = value;
+        writeIntEEPROM(EEPROM_MIN1, value);
         break;
       case 2:
         minAngle2 = value;
+        writeIntEEPROM(EEPROM_MIN2, value);
         break;
       case 3:
         minAngle3 = value;
+        writeIntEEPROM(EEPROM_MIN3, value);
         break;
     }
     sendOSC("/ack/servo/min", servo, value);
@@ -202,5 +243,6 @@ void rxOSC()
     messageIN.dispatch("/set/servo/max", setServoAngleMax);
     messageIN.dispatch("/set/servo/pos", setServoPosition);
     messageIN.dispatch("/set/mode", setMode);
+    messageIN.dispatch("/set/loopDelay", setLoopDelay);
   }
 }
