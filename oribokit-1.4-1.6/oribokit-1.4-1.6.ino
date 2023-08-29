@@ -58,8 +58,13 @@
 */
 
 #define ORIBOKIT_VERSION "1.6 singleton"
+#define OSC 1
+#define __AVR_ATmega32U4__
 
 // 
+#if OSC == 1
+  #include "oribokit.osc.h"
+#endif 
 
 #include <Servo.h>
 #include <EEPROM.h>
@@ -68,14 +73,21 @@
 #include "MovingAverage.h"
 
 // here are all the global variables, these can be accessed by the loop and setup functions
+#define DEBUG           0                                 // DEBUG level
+
+
+#define MODE_ORIBOKIT 0
+#define MODE_USER_CONTROL 1
+
+uint8_t mode = MODE_ORIBOKIT;                             // mode for functionality
 
 // SERVOS
 Servo servo1;                                             // servo class instance for servo 1
 Servo servo2;                                             // servo class instance for servo 2
 Servo servo3;                                             // servo class instance for servo 3
-int servoPin1      = 9;                                   // PWM PB5 D9  pin connected to servo 1
-int servoPin2      = 6;                                   // PWM PD7 D6  pin connected to servo 2
-int servoPin3      = 12;                                  // PWM PD6 D12 pin connected to servo 3
+#define SERVOPIN1        9                                // PWM PB5 D9  pin connected to servo 1
+#define SERVOPIN2        6                                // PWM PD7 D6  pin connected to servo 2
+#define SERVOPIN3        12                               // PWM PD6 D12 pin connected to servo 3
 int servoPosition1 = 90;                                  // variable to store the servo 1 position
 int servoPosition2 = 90;                                  // variable to store the servo 2 position
 int servoPosition3 = 90;                                  // variable to store the servo 3 position
@@ -84,24 +96,37 @@ int last_servoPosition2 = 90;                             // variable to store t
 int last_servoPosition3 = 90;                             // variable to store the servo 3 position
 
 // servo
-int minAngle1 = 90;                                       // minimum angle for servo1
-int maxAngle1 = 180;                                      // maximum angle for servo1
-int minAngle2 = 90;                                       // minimum angle for servo2
-int maxAngle2 = 180;                                      // maximum angle for servo2
-int minAngle3 = 90;                                       // minimum angle for servo3
-int maxAngle3 = 180;                                      // maximum angle for servo3
+uint8_t minAngle1 = 90;                                   // minimum angle for servo1
+uint8_t maxAngle1 = 180;                                  // maximum angle for servo1
+uint8_t minAngle2 = 90;                                   // minimum angle for servo2
+uint8_t maxAngle2 = 180;                                  // maximum angle for servo2
+uint8_t minAngle3 = 90;                                   // minimum angle for servo3
+uint8_t maxAngle3 = 180;                                  // maximum angle for servo3
 int minLight  = 500;                                      // minimum value for the LDR (this is the LO value)
-int maxLight  = 900;                                      // maximum angle for the LDR (this is the HI value)
+int maxLight  = 900;                                      // maximum value for the LDR (this is the HI value)
+
+// eeprom address settings
+
+#define EEPROM_MINLIGHT 0
+#define EEPROM_MAXLIGHT 5
+#define EEPROM_MIN1 10
+#define EEPROM_MIN2 15
+#define EEPROM_MIN3 20
+#define EEPROM_MAX1 25
+#define EEPROM_MAX2 30
+#define EEPROM_MAX3 35
+#define EEPROM_LOOP 40
 
 // BUTTONS
-int minButtonPin    = 4;                                  // PD4 button pin to set the minimum LDR value
-int maxButtonPin    = 8;                                  // PB4 button pin to set the maximum LDR value
-int maxPushed       = 0;                                  // variable to store the state of the max button
-int minPushed       = 0;                                  // variable to store the state of the min button
+uint8_t minButtonPin    = 4;                              // PD4 button pin to set the minimum LDR value
+uint8_t maxButtonPin    = 8;                              // PB4 button pin to set the maximum LDR value
+uint8_t maxPushed       = 0;                              // variable to store the state of the max button
+uint8_t minPushed       = 0;                              // variable to store the state of the min button
 bool saveConfigFlag = 0;                                  // boolean (true/false) to check if we need to save
 bool readConfigFlag = 1;                                  // boolean (true/false) to check if we need to save
 
 // LEDS
+#define LEDPIN      17                                    // PB0 info LED pin
 #define LED_PIN_1   10                                    // PWM PB6 D10 pin connected to LED data 1
 #define LED_PIN_2   5                                     // PWM PC6 D5  pin connected to LED data 2
 #define LED_PIN_3   13                                    // PWM PC7 D13 pin connected to LED data 3
@@ -114,13 +139,13 @@ bool readConfigFlag = 1;                                  // boolean (true/false
 #define COLOR_ORDER GRB                                   // colour order of LEDs
 #define HUE_HI      180                                   // in HSV space the highest hue value mapped to average sensor value
 #define HUE_LO      0                                     // in HSV space the lowest hue value mapped to average sensor value
-int hue             = 0;                                  // Hue value used in HSV colours, variable
+uint8_t hue         = 0;                                  // Hue value used in HSV colours, variable
 CRGB leds_1[NUM_LEDS_1];                                  // CRGB object 1
 CRGB leds_2[NUM_LEDS_2];                                  // CRGB object 2
 CRGB leds_3[NUM_LEDS_2];                                  // CRGB object 3
 
 // SENSOR
-int LDRPin = A0;                                          // PF7 pin connected to the Light Dependent Resistor
+#define LDRPIN A0                                         // PF7 pin connected to the Light Dependent Resistor
 int LDRreading = 0;                                       // integer variable to store the analog value
 
 // SMOOTHING VALUES
@@ -144,16 +169,15 @@ int animation_max           = 0;                          // acceleration toward
 // PERIODIC RANDOM MOVEMENT
 Statistic LDR;                                            // LDR is the statistical object for the LDR sensor
 #define LDR_STD_DEV_LIMIT 2                               // Standard Deviation limit low change of LDR
-const int loopDelay     = 50;                             // delay for every loop
+int loopDelay           = 200;                            // delay for doing servo and sensor loop actions
 double counterA         = 0;                              // counter for first timing loop
 double counterB         = 0;                              // counter for second timing loop
 int limitA              = 5000 / loopDelay;               // limit for the first timing loop
 int limitB              = random(1, 10);                  // limit for the second timing loop
 boolean LDR_low_change  = 0;                              // LDR low change variable
 int timer_state         = 0;
-// LED
-int LEDPin              = 17;                             // PB0 info LED pin
-int debug               = 2;                              // debug level
+int loopTimer           = 0;
+
 // 0 = no messages
 // 1 = data messages
 // 2 = all messages printed to serial port
@@ -164,15 +188,23 @@ int debug               = 2;                              // debug level
 // -------------------------------------------------------------------------
 
 void setup() {
-  Serial.begin(115200);                                     // start serial at baud rate 9600
+  #if OSC == 1
+    SLIPSerial.begin(115200);
+    #if ARDUINO >= 100
+      while (!Serial1)
+        ; // Leonardo "feature"
+    #endif
+  #else
+    Serial.begin(115200);                                     // start serial at baud rate 9600
+  #endif
   LDR.clear();
   // set up the servos
-  servo1.attach(servoPin1);                               // attach the servo class instance to servoPin 1
-  servo2.attach(servoPin2);                               // attach the servo class instance to servoPin 2
-  servo3.attach(servoPin3);                               // attach the servo class instance to servoPin 3
-  pinMode(LEDPin, OUTPUT);
+  servo1.attach(SERVOPIN1);                               // attach the servo class instance to servoPin 1
+  servo2.attach(SERVOPIN2);                               // attach the servo class instance to servoPin 2
+  servo3.attach(SERVOPIN3);                               // attach the servo class instance to servoPin 3
+  pinMode(LEDPIN, OUTPUT);
   // set up the buttons and sensorins
-  pinMode(LDRPin, INPUT);
+  pinMode(LDRPIN, INPUT);
   pinMode(minButtonPin, INPUT);                           // MAX Push button as input
   pinMode(maxButtonPin, INPUT);                           // MAX Push button as input
   // set up the LED objects
@@ -192,19 +224,49 @@ void setup() {
 */
 
 void saveConfig () {
-  writeIntEEPROM(0, minLight);
-  writeIntEEPROM(10, maxLight);
+  writeIntEEPROM(EEPROM_MINLIGHT, minLight);
+  writeIntEEPROM(EEPROM_MAXLIGHT, maxLight);
+  writeIntEEPROM(EEPROM_MIN1, minAngle1);
+  writeIntEEPROM(EEPROM_MIN2, minAngle2);
+  writeIntEEPROM(EEPROM_MIN3, minAngle3);
+  writeIntEEPROM(EEPROM_MAX1, maxAngle1);
+  writeIntEEPROM(EEPROM_MAX2, maxAngle2);
+  writeIntEEPROM(EEPROM_MAX3, maxAngle3);
+  writeIntEEPROM(EEPROM_LOOP, loopDelay);
 }
 
 void readConfig() {
-  minLight = readIntEEPROM(0);
-  maxLight = readIntEEPROM(10);
+  minLight  = readIntEEPROM(EEPROM_MINLIGHT);
+  maxLight  = readIntEEPROM(EEPROM_MAXLIGHT);
+  minAngle1 = (uint8_t)readIntEEPROM(EEPROM_MIN1);
+  minAngle2 = (uint8_t)readIntEEPROM(EEPROM_MIN2);
+  minAngle3 = (uint8_t)readIntEEPROM(EEPROM_MIN3);
+  maxAngle1 = (uint8_t)readIntEEPROM(EEPROM_MAX1);
+  maxAngle2 = (uint8_t)readIntEEPROM(EEPROM_MAX2);
+  maxAngle3 = (uint8_t)readIntEEPROM(EEPROM_MAX3);
+  loopDelay  = readIntEEPROM(EEPROM_LOOP);
   animation_min = minLight;
   animation_max = maxLight;
-  Serial.print(" minLight");
-  Serial.print(minLight);
-  Serial.print(" maxLight");
-  Serial.println(maxLight);
+  if (DEBUG > 0)
+  {
+    Serial.print(" minLight ");
+    Serial.print(minLight);
+    Serial.print(" maxLight ");
+    Serial.println(maxLight);
+    Serial.print(" minAngle1 ");
+    Serial.print(minAngle1);
+    Serial.print(" minAngle2 ");
+    Serial.println(minAngle2);
+    Serial.print(" minAngle3 ");
+    Serial.print(minAngle3);
+    Serial.print(" maxAngle1 ");
+    Serial.println(maxAngle1);
+    Serial.print(" maxAngle2 ");
+    Serial.println(maxAngle2);
+    Serial.print(" maxAngle3 ");
+    Serial.println(maxAngle3);
+  }
+  
   readConfigFlag = 0;
 }
 
@@ -219,7 +281,7 @@ void writeIntEEPROM(int address, int number)
 {
   byte byte1 = number >> 8;
   byte byte2 = number & 0xFF;
-  if (debug > 0) {
+  if (DEBUG > 0) {
     Serial.print("EEPROM.write: addr: ");
     Serial.print(address, HEX);
     Serial.print("  val: ");
@@ -230,64 +292,10 @@ void writeIntEEPROM(int address, int number)
   EEPROM.write(address + 1, byte2);
 }
 
-// -------------------------------------------------------------------------
-// LOOP FUNCTION
-// this function repeats forever, as fast as the processor can go!
-// 1. read the sensor and average out the readings
-//    averaging smooths out spikes in the readings
-//    making the servo movement less jittery
-//    try changing the number of readings
-// 2. allow for button presses
-//    pressing the min or max button allows setting of the
-//    state that determines the LO or HI position of the servo
-//    at that light level
-// 3. position the servos
-// --------------------------------------------------------------------------
-
-
-void loop() {
-
-  // 0. read config from eeprom
-  if (readConfigFlag) {
-    readConfig();
-  }
-
-  // 1. read get average sensor values average sensor values & process animation value
-  readSensors();
-
-  // 2. always poll LDR low change
-  LDR_low_change = checkLDRChange();
-  
-  // 3. update the smoothing arrays with values from either random or from sensor data
-  if (LDR_low_change)
-  {
-    randomAnimation();
-  } else {
-    sensorAnimation();
-  }
-
-  // 2. check for button presses
-  checkButtons();
-
-  // 3. check the timers and statistics object
-  // timer_state flips if both counters exceed limits
-  timer_state = checkTimers(timer_state);
-
-  // 5. use a different set of values based on LDR_low_change
-  updateLEDs(average1, average2, average3);
-  updateServos(average1, average2, average3);
-
-  // 6. show debug
-  printDebug();
-  // LOOP DELAY
-  // changing the delay changes how many miliseconds pass between each loop
-  // 1000 is one second, to make your oribokit response slow, set this to a high number
-  delay(loopDelay);
-}
 
 void readSensors()
 {
-  LDRreading = analogRead(LDRPin);                        // read from the sensor:
+  LDRreading = analogRead(LDRPIN);                        // read from the sensor:
   LDR.add(LDRreading);                                    // add to the statistics object
 }
 
@@ -329,13 +337,19 @@ int checkTimers(int state) {
       // reset the counters and set a random number for the next cycle length
       limitB = random(1, 10);
       counterB = 0;
-      randomSeed(limitB);
+      randomSeed(LDRreading);
       animation_min = minLight + random(0, maxLight-minLight);
-      randomSeed(limitA);
+      randomSeed(LDRreading);
       animation_max = maxLight - random(0, maxLight-minLight);
       LDR.clear();
+      #if OSC
+        updateTimersOSC();
+      #endif
     }
   }
+  #if OSC
+    updateCountersOSC();
+  #endif
   return state;
 }
 
@@ -345,11 +359,11 @@ void checkButtons()
   // --------------------------
   maxPushed = digitalRead(maxButtonPin);                  // read if button is pressed
   if (maxPushed) {                                        // set maximum LDR value
-    digitalWrite(LEDPin, LOW);                            // turn LED ON
+    digitalWrite(LEDPIN, LOW);                            // turn LED ON
     maxLight = average1;                                  // put current average reading into the max value
-    if (debug > 1) {
-      Serial.print("--------------- SET MAX: ");          // output values for debug information
-      Serial.println(maxLight);                           // output values for debug information
+    if (DEBUG > 1) {
+      Serial.print("--------------- SET MAX: ");          // output values for DEBUG information
+      Serial.println(maxLight);                           // output values for DEBUG information
     }
     saveConfigFlag = true;
   }
@@ -358,18 +372,18 @@ void checkButtons()
   // ---------------------------
   minPushed = digitalRead(minButtonPin);                  // read if button is pressed
   if (minPushed) {                                        // if the button is pressed
-    digitalWrite(LEDPin, LOW);                            // turn LED ON// turn LED ON
+    digitalWrite(LEDPIN, LOW);                            // turn LED ON// turn LED ON
     minLight = average1;                                  // put current average reading into the max value
-    if (debug > 1) {
-      Serial.print("--------------- SET MIN: ");          // output values for debug information
-      Serial.println(minLight);                           // output values for debug information
+    if (DEBUG > 1) {
+      Serial.print("--------------- SET MIN: ");          // output values for DEBUG information
+      Serial.println(minLight);                           // output values for DEBUG information
     }
     saveConfigFlag = true;
   }
 
   // turn the LED off if no buttons are pushed
   if (!minPushed && !maxPushed) {                         // if maxbutton not pushed and minbutton not pushed
-    digitalWrite(LEDPin, HIGH);                            // turn LED off
+    digitalWrite(LEDPIN, HIGH);                            // turn LED off
     if (saveConfigFlag) {                                 // check if the save Config Flag was set
       saveConfig ();                                      // save the config
       readConfig ();                                      // read the config
@@ -423,49 +437,92 @@ void updateLEDs (int value1, int value2, int value3)
     leds_3[i] = CHSV(hue, SATURATION, BRIGHTNESS);
   }
   FastLED.show();
+}
 
+void manualLEDs (int value1, int value2, int value3)
+{
+  // -------------------------
+  // 4. set the LED values
+  // set the hsv values of each LED according to the servo positon averaages.
+  // map and then constrain the hue value for each servo
+  // update each LED element in each object
+  // -------------------------
+  // 1
+  hue = map(value1, 0, 180, HUE_LO, HUE_HI);
+  hue = constrain(hue, HUE_LO, HUE_HI);
+  int i;
+  for (i=0; i<NUM_LEDS_1; i++)
+  {
+    leds_1[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_1[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
+  
+  // 2
+  hue = map(value2, 0, 180, HUE_LO, HUE_HI);
+  hue = constrain(hue, HUE_LO, HUE_HI);
+  for (i=0; i<NUM_LEDS_2; i++)
+  {
+    leds_2[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_2[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
+  // 3
+  hue = map(value3, 0, 180, HUE_LO, HUE_HI);
+  hue = constrain(hue, HUE_LO, HUE_HI);
+  for (i=0; i<NUM_LEDS_3; i++)
+  {
+    leds_3[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+    leds_3[i] = CHSV(hue, SATURATION, BRIGHTNESS);
+  }
+  FastLED.show();
 }
 
 void updateServos(int value1, int value2, int value3)
 {
   // --------------------------
-  // 3. position the servos
+  // 3. update the servo position values
   // position the servo based on the current LDR average reading
   // mapped between the min and max LDR settings
   // mapped to the min and max angle settings
   // --------------------------
 
-  servoPosition1 = map(value1, minLight, maxLight, minAngle1, maxAngle1);
+  servoPosition1 = (int)map(value1, minLight, maxLight, minAngle1, maxAngle1);
   servoPosition1 = constrain(servoPosition1, minAngle1, maxAngle1);
+  
+  servoPosition2 = (int)map(value2, minLight, maxLight, minAngle2, maxAngle2);
+  servoPosition2 = constrain(servoPosition2, minAngle2, maxAngle2);
+ 
+  servoPosition3 = (int)map(value3, minLight, maxLight, minAngle3, maxAngle3);
+  servoPosition3 = constrain(servoPosition3, minAngle3, maxAngle3);
+
+  // then position them
+  positionServos();
+}
+
+void positionServos() {
+  // servo 1
   if (servoPosition1 != last_servoPosition1)
   {
-    servo1.attach(servoPin1);                               // attach the servo class instance to servoPin 1
+    servo1.attach(SERVOPIN1);                               // attach the servo class instance to servoPin 1
     servo1.write(servoPosition1);
   } else {
     servo1.detach();
   }
-  
-
-  servoPosition2 = map(value2, minLight, maxLight, minAngle2, maxAngle2);
-  servoPosition2 = constrain(servoPosition2, minAngle2, maxAngle2);
+  // servo 2
   if (servoPosition2 != last_servoPosition2)
   {
-    servo2.attach(servoPin2);                               // attach the servo class instance to servoPin 2
+    servo2.attach(SERVOPIN2);                               // attach the servo class instance to servoPin 2
     servo2.write(servoPosition2);
   } else {
     servo2.detach();
   }
-
-  servoPosition3 = map(value3, minLight, maxLight, minAngle3, maxAngle3);
-  servoPosition3 = constrain(servoPosition3, minAngle3, maxAngle3);
+  // servo 3
   if (servoPosition3 != last_servoPosition3)
   {
-    servo3.attach(servoPin3);                               // attach the servo class instance to servoPin 3
+    servo3.attach(SERVOPIN3);                               // attach the servo class instance to servoPin 3
     servo3.write(servoPosition3);
   } else {
     servo3.detach();
   }
-
   last_servoPosition1 = servoPosition1;
   last_servoPosition2 = servoPosition2;
   last_servoPosition3 = servoPosition1;
@@ -473,7 +530,7 @@ void updateServos(int value1, int value2, int value3)
 
 void printDebug ()
 {
-  if (debug > 0) {
+  if (DEBUG > 0) {
 
     Serial.print("\tC-A ");
     Serial.print(counterA);
@@ -482,7 +539,7 @@ void printDebug ()
     Serial.print("\t LDR ");
     Serial.print(LDRreading);
     Serial.print("\t");
-    if (debug > 1) {
+    if (DEBUG > 1) {
       //      Serial.print(minLight);
       //      Serial.print("\t");
       //      Serial.print(maxLight);
@@ -520,4 +577,90 @@ void printDebug ()
     Serial.print(timer_state);
     Serial.println();
   }
+}
+
+
+// ------------------------------------------------------------------------- 
+// ORIBOKIT MODE
+// this function repeats forever, as fast as the processor can go!
+// 1. read the sensor and average out the readings
+//    averaging smooths out spikes in the readings
+//    making the servo movement less jittery
+//    try changing the number of readings
+// 2. allow for button presses
+//    pressing the min or max button allows setting of the
+//    state that determines the LO or HI position of the servo
+//    at that light level
+// 3. position the servos
+// --------------------------------------------------------------------------
+
+
+void mode_oribokit ()
+{
+  // 0. read config from eeprom
+  if (readConfigFlag) {
+    readConfig();
+  }
+
+  // 1. read get average sensor values average sensor values & process animation value
+  readSensors();
+
+  // 2. always poll LDR low change
+  LDR_low_change = checkLDRChange();
+  
+  // 3. update the smoothing arrays with values from either random or from sensor data
+  if (LDR_low_change)
+  {
+    randomAnimation();
+  } else {
+    sensorAnimation();
+  }
+
+  // 2. check for button presses
+  checkButtons();
+
+  // 3. check the timers and statistics object
+  // timer_state flips if both counters exceed limits
+  timer_state = checkTimers(timer_state);
+
+  // 5. use a different set of values based on LDR_low_change
+  updateLEDs(average1, average2, average3);
+  updateServos(average1, average2, average3);
+}
+
+void mode_user_control()
+{
+  manualLEDs(servoPosition1, servoPosition2, servoPosition3);
+  positionServos();
+}
+
+void loop() {
+  // check for OSC input
+  #if OSC == 1
+    updateOSC();
+    if (SLIPSerial.available() > 0)
+      rxOSC();
+  #endif
+
+  loopTimer ++;
+  if (loopTimer > loopDelay)
+  {
+    loopTimer = 0;
+    switch (mode)
+    {
+      case MODE_ORIBOKIT:
+        mode_oribokit ();
+        break;
+      case MODE_USER_CONTROL:
+        mode_user_control();
+        break;
+    }
+  }
+  
+
+  printDebug();
+  // LOOP DELAY
+  // changing the delay changes how many miliseconds pass between each loop
+  // 1000 is one second, to make your oribokit response slow, set this to a high number
+  //delay(loopDelay);
 }
