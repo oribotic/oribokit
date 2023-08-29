@@ -4,8 +4,8 @@
 **Contents** 
 
 1. [programming instructions](#programming-instructions)
-2. [system information](#additional-system-information)
-3. [Dependencies](#dependencies)
+2. [Dependencies](#dependencies)
+3. [system information](#additional-system-information)
 4. [pinouts](#pinouts)
 5. [board information](#board-information)
 
@@ -23,8 +23,9 @@ You can either download the code or copy and paste the code into a new arduino s
 2. Connect USB-C cable to oribokit and your computer USB port (automatically install or manually install drivers on windows https://www.arduino.cc/en/Guide/DriverInstallation)
 3. Select Tools > Board > Arduino Micro
 4. Select Tools > Port > [your USB or COM port]
-5. Compile and upload
-6. If the RESET LED flashes during programming, press RESET button (near USB connector)
+5. Install all dependencies (see below)
+6. Compile and upload
+7. If the RESET LED flashes during programming, press RESET button (near USB connector)
 
 For additional help on getting started, including installation of USB drivers, see https://docs.arduino.cc/retired/getting-started-guides/ArduinoLeonardoMicro
 
