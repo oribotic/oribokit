@@ -17,24 +17,14 @@
 
 extern int LDRreading;
 extern int servoPosition1;
-extern int servoPosition2;
-extern int servoPosition3;
 extern int last_servoPosition1;
-extern int last_servoPosition2;
-extern int last_servoPosition3;
 extern int average1;
-extern int average2;
-extern int average3;
 extern int minLight;
 extern int maxLight;
 extern uint8_t mode;
 extern uint8_t previousMode;
 extern uint8_t minAngle1;
 extern uint8_t maxAngle1;
-extern uint8_t minAngle2;
-extern uint8_t maxAngle2;
-extern uint8_t minAngle3;
-extern uint8_t maxAngle3;
 
 extern double counterA;
 extern double counterB;
@@ -58,3 +48,9 @@ void setLDRHigh (OSCMessage &msg, int arg);
 void setLDRLow (OSCMessage &msg, int arg);
 void setServoHigh (OSCMessage &msg, int arg);
 void setServoLow (OSCMessage &msg, int arg);
+
+void setServoAngleMax (OSCMessage &msg);
+void setServoAngleMin (OSCMessage &msg);
+
+void readConfig();
+void saveConfig();
