@@ -1,4 +1,4 @@
-#N canvas 34 78 714 868 12;
+#N canvas 34 78 604 540 12;
 #X msg 67 30 devices;
 #X msg 89 56 close, f 6;
 #X obj 284 36 bng 19 250 50 0 empty empty empty 0 -10 0 12 #fcfcfc #000000 #000000;

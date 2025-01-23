@@ -324,9 +324,9 @@ void checkButtons()
   maxPushed = digitalRead(BUTTON_PIN_MAX);                  // read if button is pressed
   if (maxPushed) {                                          // set maximum LDR value
     digitalWrite(LEDPIN, LOW);                              // turn LED ON
-    if (settingsMode == MODE_SERVO)
-    {
-      maxAngle1 ++;
+    if (settingsMode == MODE_SERVO)                         // ______________SERVO SETTINGS MODE
+    {                                                       // pressing HI button, increases the max angle of the servo
+      maxAngle1 ++; 
       if (maxAngle1 > 179)
       {
         maxAngle1 = 179;
@@ -334,7 +334,7 @@ void checkButtons()
       sendOSC("/ack/maxangle", maxAngle1);
       servoPosition1 = angleToServoPosition(maxAngle1);
     }
-    if (settingsMode == MODE_SENSOR)
+    if (settingsMode == MODE_SENSOR)                        // ______________SENSOR SETTINGS MODE
     {
       maxLight = average1;                                  // put current average reading into the max value
       lastPushed = 'max';
@@ -351,7 +351,7 @@ void checkButtons()
   minPushed = digitalRead(BUTTON_PIN_MIN);                  // read if button is pressed
   if (minPushed) {                                          // if the button is pressed
     digitalWrite(LEDPIN, LOW);                              // turn LED ON// turn LED ON
-    if (settingsMode == MODE_SENSOR)
+    if (settingsMode == MODE_SENSOR)                        // ______________SENSOR SETTINGS MODE
     {
       maxAngle1 = average1;                                  // put current average reading into the max value
       lastPushed = 'min';
@@ -361,9 +361,9 @@ void checkButtons()
       }
       saveConfigFlag = true;
     }
-    if (settingsMode == MODE_SERVO)
+    if (settingsMode == MODE_SERVO)                         // ______________SERVO SETTINGS MODE
     {
-      maxAngle1 --;
+      maxAngle1 --;     
       if (maxAngle1 < 2)
       {
         maxAngle1 = 1;

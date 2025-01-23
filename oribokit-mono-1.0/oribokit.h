@@ -7,7 +7,7 @@
 #define SERVOPIN1        9                                // PWM PB5 D9  pin connected to servo 1
 #define SERVOPIN2        6                                // PWM PD7 D6  pin connected to servo 2
 #define SERVOPIN3        12                               // PWM PD6 D12 pin connected to servo 3
-#define SERVODIRECTION   -1                               // set to -1 or 1, to flip the servo direction
+#define SERVODIRECTION   1                               // set to -1 or 1, to flip the servo direction
 
 // eeprom address settings
 #define EEPROM_MINLIGHT 0
